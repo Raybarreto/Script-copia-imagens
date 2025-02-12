@@ -1,0 +1,1 @@
+# Script-copia-imagens
