@@ -1,0 +1,41 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Definir as pastas de origem (nível superior) e destino
+set "pasta_origem=C:\7-Raylaine\Teste1"
+set "pasta_destino=C:\7-Raylaine\Teste2"
+
+:: Obter a data e hora atuais no formato desejado para o nome do arquivo de log
+for /f "tokens=2 delims==." %%a in ('wmic OS Get LocalDateTime /VALUE ^| findstr LocalDateTime') do set "dataHora=%%a"
+set "data=%dataHora:~6,2%-%dataHora:~4,2%-%dataHora:~0,4%"
+set "hora=%dataHora:~8,2%%dataHora:~10,2%%dataHora:~12,2%"
+
+:: Criar o nome do arquivo de log com data, hora, minuto e segundo para evitar sobrescrever
+set "arquivoLog=DER_%data%_%hora%.txt"
+
+:: Criar o arquivo de log
+echo Criando arquivo de log...
+(
+  for %%a in ("%pasta_origem%") do (
+    for /d %%b in ("%%a\*") do (
+      set "primeira_imagem="
+      set "ultima_imagem="
+      set /a contador=0
+
+      for %%i in ("%%b\*.jpg" "%%b\*.png") do (
+        if not defined primeira_imagem set "primeira_imagem=%%~nxi"
+        set "ultima_imagem=%%~nxi"
+        copy "%%i" "%pasta_destino%" >nul 2>&1
+        set /a contador+=1
+      )
+
+      :: Extraindo apenas o nome da pasta atual
+      for %%n in ("%%~nxb") do set "nome_pasta=%%~n"
+
+      :: Ajustando o formato da linha de log para exibir apenas o nome dos arquivos
+      echo Em %data% %hora% - !nome_pasta!^- !primeira_imagem! a !ultima_imagem!  Total: !contador!
+    )
+  )
+) > "%arquivoLog%"
+
+echo Tarefa concluída!
