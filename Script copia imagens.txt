@@ -9,7 +9,7 @@ for /f "tokens=2 delims==." %%a in ('wmic OS Get LocalDateTime /VALUE ^| findstr
 set "data=%dataHora:~6,2%-%dataHora:~4,2%-%dataHora:~0,4%"
 set "hora=%dataHora:~8,2%%dataHora:~10,2%%dataHora:~12,2%"
 
-set "arquivoLog=DER_%data%_%hora%.txt"
+set "arquivoLog=LOG_%data%_%hora%.txt"
 
 echo Criando arquivo de log...
 (
